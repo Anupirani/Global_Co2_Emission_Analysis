@@ -98,18 +98,18 @@ ALTER COLUMN country TYPE varchar(50) ;``
 
 --1. Dataset Overview (Year Range & Country Count)
 
-SELECT
+``SELECT
     MIN(year) AS start_year,
     MAX(year) AS end_year,
     COUNT(DISTINCT country) AS number_of_countries,
     COUNT(*) AS total_records
-FROM emission;
+FROM emission;``
 
 
 --2.Latest Year in Dataset
 
-SELECT MAX(year) AS latest_year
-FROM emission;
+``SELECT MAX(year) AS latest_year
+FROM emission;``
 
 --3.Top 10 CO₂ Emitting Countries (Latest Year)
 
