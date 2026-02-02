@@ -1,9 +1,10 @@
-# **Global_Co2_Emission_Analysis**
+# **Global_Co2_Emission_Analysis**:
 
---**Global Co2 Emission Analysis**
+--**Global Co2 Emission Analysis**:
 
---**importing Data set**
-```sql create table emission
+--**importing Data set**:
+```sql
+create table emission
  (
 		 country varchar(11),
 		 year	int ,
@@ -87,17 +88,18 @@
 )```
 
 
---**ALTER TABLE emission**
+--**ALTER TABLE emission**:
 
-```ALTER COLUMN population TYPE numeric ,
+```sql
+ALTER COLUMN population TYPE numeric ,
 ALTER COLUMN iso_code TYPE Text ,
 ALTER COLUMN gdp TYPE numeric ,
 ALTER COLUMN country TYPE varchar(50) ;```
 
 
---**Global_Co2_Emission_Analysis**
+--**Global_Co2_Emission_Analysis**:
 
---1. Dataset Overview (Year Range & Country Count)
+--1. **Dataset Overview (Year Range & Country Count)**:
 ```sql
 SELECT
     MIN(year) AS start_year,
