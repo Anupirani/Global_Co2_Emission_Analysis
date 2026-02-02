@@ -3,7 +3,7 @@
 --**Global Co2 Emission Analysis**
 
 --**importing Data set**
-```create table emission
+```sql create table emission
  (
 		 country varchar(11),
 		 year	int ,
@@ -98,8 +98,8 @@ ALTER COLUMN country TYPE varchar(50) ;```
 --**Global_Co2_Emission_Analysis**
 
 --1. Dataset Overview (Year Range & Country Count)
-
-```SELECT
+```sql
+SELECT
     MIN(year) AS start_year,
     MAX(year) AS end_year,
     COUNT(DISTINCT country) AS number_of_countries,
@@ -109,12 +109,13 @@ FROM emission;```
 
 --2.Latest Year in Dataset
 
-```SELECT MAX(year) AS latest_year
+```sql SELECT MAX(year) AS latest_year
 FROM emission;```
 
 --3.Top 10 CO₂ Emitting Countries (Latest Year)
 
-```SELECT
+```sql
+SELECT
     country,
     co2
 FROM emission
