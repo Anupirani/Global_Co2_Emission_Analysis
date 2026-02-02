@@ -4,7 +4,7 @@
 
 --importing Data set
 create table emission
-`` (
+``` (
 		 country varchar(11),
 		 year	int ,
 		 iso_code varchar (3) ,	
@@ -84,36 +84,36 @@ create table emission
 		 total_ghg_excluding_lucf numeric,	
 		 trade_co2	numeric,
 		 trade_co2_share numeric
-)``
+)```
 
 
-``ALTER TABLE emission
+```ALTER TABLE emission
 ALTER COLUMN population TYPE numeric ,
 ALTER COLUMN iso_code TYPE Text ,
 ALTER COLUMN gdp TYPE numeric ,
-ALTER COLUMN country TYPE varchar(50) ;``
+ALTER COLUMN country TYPE varchar(50) ;```
 
 
 --Global_Co2_Emission_Analysis
 
 --1. Dataset Overview (Year Range & Country Count)
 
-``SELECT
+```SELECT
     MIN(year) AS start_year,
     MAX(year) AS end_year,
     COUNT(DISTINCT country) AS number_of_countries,
     COUNT(*) AS total_records
-FROM emission;``
+FROM emission;```
 
 
 --2.Latest Year in Dataset
 
-``SELECT MAX(year) AS latest_year
-FROM emission;``
+```SELECT MAX(year) AS latest_year
+FROM emission;```
 
 --3.Top 10 CO₂ Emitting Countries (Latest Year)
 
-SELECT
+```SELECT
     country,
     co2
 FROM emission
@@ -121,9 +121,9 @@ WHERE year = (SELECT MAX(year) FROM emission)
 ORDER BY co2 DESC
 LIMIT 10
 offset 3;
-
+```
 --4.Top 10 CO₂ Emitting Countries (Latest Year)
-
+```
 SELECT
     country,
     ROUND(AVG(co2_growth_prct), 2) AS avg_co2_growth_percent
@@ -132,11 +132,11 @@ WHERE co2_growth_prct IS NOT NULL
 GROUP BY country
 ORDER BY avg_co2_growth_percent DESC
 LIMIT 10;
-
+```
 
 --5.CO₂ Per Capita vs GDP (for Intensity Analysis)
 
-SELECT
+```SELECT
     country,
     year,
     gdp,
@@ -146,7 +146,7 @@ SELECT
 FROM emission
 WHERE co2 IS NOT NULL
   AND gdp IS NOT NULL
-  AND population IS NOT NULL;
+  AND population IS NOT NULL;```
 
 --6.CO₂ Per Capita vs GDP (for Intensity Analysis)
 
