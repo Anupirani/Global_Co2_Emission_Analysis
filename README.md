@@ -145,9 +145,10 @@ LIMIT 10;
 ```
 
 
---5.CO₂ Per Capita vs GDP (for Intensity Analysis)
+--5.**CO₂ Per Capita vs GDP (for Intensity Analysis)**:
 
-```SELECT
+```sql
+    SELECT
     country,
     year,
     gdp,
@@ -157,11 +158,13 @@ LIMIT 10;
 FROM emission
 WHERE co2 IS NOT NULL
   AND gdp IS NOT NULL
-  AND population IS NOT NULL;```
+  AND population IS NOT NULL;
+```
 
---6.CO₂ Per Capita vs GDP (for Intensity Analysis)
+--6.**CO₂ Per Capita vs GDP (for Intensity Analysis)**:
 
- ``` SELECT
+ ```sql
+ SELECT
     country,
     temperature_change_from_co2,
     temperature_change_from_ch4,
@@ -171,29 +174,35 @@ FROM emission
 WHERE year = (SELECT MAX(year) FROM emission)
 ORDER BY temperature_change_from_ghg DESC
 LIMIT 10
-offset 3;```
+offset 3;
+```
 
---7.Temperature Change Contribution by Gas (Latest Year)
+--**7.Temperature Change Contribution by Gas (Latest Year)**:
 
-```SELECT
+```sql
+    SELECT
     year,
     ROUND(SUM(co2), 2) AS global_co2
 FROM emission
 GROUP BY year
-ORDER BY year;```
+ORDER BY year;
+```
 
---8.Global Trend of CO₂ Over Time
-```SELECT
+--8.**Global Trend of CO₂ Over Time**:
+```sql
+   SELECT
     year,
     ROUND(AVG(co2_per_capita), 4) AS avg_co2_per_capita
 FROM emission
 WHERE co2_per_capita IS NOT NULL
 GROUP BY year
-ORDER BY year;```
+ORDER BY year;
+```
 
---9.Per-Capita Emissions Trend (Global Average)
+--9.**Per-Capita Emissions Trend (Global Average)**:
 
-```SELECT
+```sql
+    SELECT
     country,
     ROUND(AVG(co2_growth_prct),2) AS avg_growth_pct,
     ROUND(AVG(co2),2) AS avg_co2
@@ -202,11 +211,13 @@ GROUP BY country
 HAVING AVG(co2) < 100
 ORDER BY avg_growth_pct DESC
 LIMIT 10
-offset 1;```
+offset 1;
+```
 
---10.Countries with Rapid Growth but Low Absolute Emissions
+--10.**Countries with Rapid Growth but Low Absolute Emissions**:
 
-```SELECT
+```sql
+     SELECT
     'trade_co2' AS column_name,
     ROUND(100.0 * SUM(CASE WHEN trade_co2 IS NULL THEN 1 ELSE 0 END)/COUNT(*),2) AS missing_percent
 FROM emission
@@ -214,11 +225,13 @@ UNION ALL
 SELECT
     'consumption_co2',
     ROUND(100.0 * SUM(CASE WHEN consumption_co2 IS NULL THEN 1 ELSE 0 END)/COUNT(*),2)
-FROM emission;```
+FROM emission;
+```
 
---11.Emissions Concentration (Share of Top 3 Countries)
+--11.**Emissions Concentration (Share of Top 3 Countries)**:
 
-```WITH top3 AS (
+```sql
+WITH top3 AS (
     SELECT country, co2
     FROM emission
     WHERE year = (SELECT MAX(year) FROM emission)
@@ -234,13 +247,15 @@ total AS (
 SELECT
     ROUND(100 * SUM(t.co2) / g.global_total, 2) AS top3_share_percent
 FROM top3 t, total g
-group by g.global_total ;```
+group by g.global_total ;
+```
 
 
---Advance Level
+--**Advance Level**
 
---12) Year-over-Year Change per Country (Window Function)
-```SELECT
+--12) **Year-over-Year Change per Country (Window Function)**:
+```sql
+    SELECT
     country,
     year,
     co2,
@@ -250,11 +265,13 @@ group by g.global_total ;```
         2
     ) AS yoy_change
 FROM emission
-ORDER BY country, year;```
+ORDER BY country, year;
+```
 
---13) CAGR of CO₂ Emissions per Country
+--**13) CAGR of CO₂ Emissions per Country**:
 
-```WITH bounds AS (
+```sql
+WITH bounds AS (
     SELECT
         country,
         MIN(year) AS start_year,
@@ -284,12 +301,14 @@ SELECT
     ) AS cagr_percent
 FROM values
 WHERE start_co2 > 0 AND years > 0
-ORDER BY cagr_percent DESC;```
+ORDER BY cagr_percent DESC;
+```
 
 
---14) Top 3 Emitters Per Year (Dense Rank)
+--**14) Top 3 Emitters Per Year (Dense Rank)**:
 
-```SELECT *
+```sql
+ SELECT *
 FROM (
     SELECT
         year,
@@ -300,13 +319,15 @@ FROM (
 	where co2 is not null
 ) x
 WHERE rank_in_year <= 3
-ORDER BY year, rank_in_year;```
+ORDER BY year, rank_in_year;
+```
 
 
 
---15) Country Share of Global Emissions (Per Year)
+--15)**Country Share of Global Emissions (Per Year)**:
 
-```WITH global_totals AS (
+```sql
+   WITH global_totals AS (
     SELECT year, SUM(co2) AS global_co2
     FROM emission
     GROUP BY year
@@ -320,12 +341,14 @@ FROM emission e
 JOIN global_totals g
   ON e.year = g.year
 ORDER BY e.year, share_percent DESC
-offset 3;```
+offset 3;
+```
 
---16) 5-Year Moving Average of CO₂ (Smoothing)
+--16) **5-Year Moving Average of CO₂ (Smoothing)**:
 
 
-```SELECT
+```sql
+    SELECT
     country,
     year,
     co2,
@@ -337,11 +360,13 @@ offset 3;```
         ), 2
     ) AS moving_avg_5yr
 FROM emission
-ORDER BY country, year;```
+ORDER BY country, year;
+```
 
---17) Emission Spike Detection (Anomaly)
+--17) **Emission Spike Detection (Anomaly)**:
 
-```WITH stats AS (
+```sql
+    WITH stats AS (
     SELECT
         country,
         AVG(co2) AS avg_co2,
@@ -358,12 +383,14 @@ SELECT
 FROM emission e
 JOIN stats s ON e.country = s.country
 WHERE e.co2 > s.avg_co2 + (2 * s.sd_co2)
-ORDER BY e.co2 DESC;```
+ORDER BY e.co2 DESC;
+```
 
 
---18) Decoupling Analysis (GDP ↑ while CO₂ ↓)
+--18) **Decoupling Analysis (GDP ↑ while CO₂ ↓)**:
 
-```WITH growth AS (
+```sql
+WITH growth AS (
     SELECT
         country,
         year,
@@ -374,12 +401,14 @@ ORDER BY e.co2 DESC;```
 SELECT *
 FROM growth
 WHERE co2_delta < 0
-  AND gdp_delta > 0;```
+  AND gdp_delta > 0;
+```
 
 
---19) Elasticity of Emissions vs GDP
+--19)**Elasticity of Emissions vs GDP**:
 
-```WITH deltas AS (
+```sql
+  WITH deltas AS (
     SELECT
         country,
         year,
@@ -395,12 +424,14 @@ SELECT
     ROUND(AVG(co2_growth / NULLIF(gdp_growth,0)), 3) AS elasticity
 FROM deltas
 GROUP BY country
-ORDER BY elasticity DESC;```
+ORDER BY elasticity DESC;
+```
 
 
---20) Cumulative Emissions Per Country
+--20) **Cumulative Emissions Per Country**:
 
-```SELECT
+```sql
+    SELECT
     country,
     year,
     SUM(co2) OVER (
@@ -408,12 +439,14 @@ ORDER BY elasticity DESC;```
         ORDER BY year
         ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
     ) AS cumulative_co2
-FROM emission;```
+FROM emission;
+```
 
 
---21) Turning Point Detection (Peak Year)
+--21) **Turning Point Detection (Peak Year)**:
 
-```WITH ranked AS (
+```sql
+  WITH ranked AS (
     SELECT
         country,
         year,
@@ -423,12 +456,14 @@ FROM emission;```
 )
 SELECT country, year AS peak_year, co2
 FROM ranked
-WHERE rnk = 1;```
+WHERE rnk = 1;
+```
 
 
---22) Countries With Consistent Decline (Last 5 Years)
+--22) **Countries With Consistent Decline (Last 5 Years)**:
 
-```WITH recent AS (
+```sql
+WITH recent AS (
     SELECT *
     FROM emission
     WHERE year >= (SELECT MAX(year) FROM emission) - 5
@@ -443,13 +478,15 @@ changes AS (
 SELECT country
 FROM changes
 GROUP BY country
-HAVING MAX(delta) < 0;```
+HAVING MAX(delta) < 0;
+```
 
 
---23) Top Countries Driving Global Increase
+--23) **Top Countries Driving Global Increase**:
 
 
-```WITH deltas AS (
+```sql
+  WITH deltas AS (
     SELECT
         country,
         year,
@@ -467,7 +504,8 @@ SELECT
 FROM latest
 ORDER BY increase DESC
 LIMIT 10
-offset 3;```
+offset 3;
+```
 
 
 
