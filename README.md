@@ -94,7 +94,8 @@ create table emission
 ALTER COLUMN population TYPE numeric ,
 ALTER COLUMN iso_code TYPE Text ,
 ALTER COLUMN gdp TYPE numeric ,
-ALTER COLUMN country TYPE varchar(50) ;```
+ALTER COLUMN country TYPE varchar(50) ;
+```
 
 
 --**Global_Co2_Emission_Analysis**:
@@ -106,15 +107,18 @@ SELECT
     MAX(year) AS end_year,
     COUNT(DISTINCT country) AS number_of_countries,
     COUNT(*) AS total_records
-FROM emission;```
+FROM emission;
+```
 
 
---2.Latest Year in Dataset
+--2.**Latest Year in Dataset**:
 
-```sql SELECT MAX(year) AS latest_year
-FROM emission;```
+```sql
+SELECT MAX(year) AS latest_year
+FROM emission;
+```
 
---3.Top 10 CO₂ Emitting Countries (Latest Year)
+--3.**Top 10 CO₂ Emitting Countries (Latest Year)**:
 
 ```sql
 SELECT
@@ -124,18 +128,21 @@ FROM emission
 WHERE year = (SELECT MAX(year) FROM emission)
 ORDER BY co2 DESC
 LIMIT 10
-offset 3;```
+offset 3;
+```
 
---4.Top 10 CO₂ Emitting Countries (Latest Year)
+--4.**Top 10 CO₂ Emitting Countries (Latest Year)**:
 
-```SELECT
+```sql
+   SELECT
     country,
     ROUND(AVG(co2_growth_prct), 2) AS avg_co2_growth_percent
 FROM emission
 WHERE co2_growth_prct IS NOT NULL
 GROUP BY country
 ORDER BY avg_co2_growth_percent DESC
-LIMIT 10;```
+LIMIT 10;
+```
 
 
 --5.CO₂ Per Capita vs GDP (for Intensity Analysis)
